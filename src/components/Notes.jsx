@@ -1,5 +1,5 @@
 import NoteCard from './NoteCard.jsx'
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function Notes() {
   const [notes, setNotes] = useState([
@@ -20,6 +20,12 @@ function Notes() {
     body: ""
   })
 
+  const newNote = {
+        id: crypto.randomUUID(),
+        title: form.title,
+        body: form.body
+  }
+
   function handleChange(e) {
     const { name, value } = e.target
     setForm({
@@ -27,12 +33,7 @@ function Notes() {
       [name]: value
     })
   }
-
-  const newNote = {
-        id: crypto.randomUUID(),
-        title: form.title,
-        body: form.body
-    }
+  
 
   function handleSubmit(e){
         e.preventDefault();
@@ -52,14 +53,20 @@ function Notes() {
   }
  
   const [search, setSearch] = useState("");
- 
-    const filteredNotes = notes.filter((note) =>
-        note.title.toLowerCase().includes(search.toLowerCase())
-    );
 
   useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes])    
+    const saved = localStorage.getItem('notes')
+    if (saved) setNotes(JSON.parse(saved))
+  }, [])
+ 
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(notes))
+  }, [notes])
+
+
+    const filteredNotes = notes.filter((note) =>
+        note.title.toLowerCase().includes(search.toLowerCase())
+    );   
   
   return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
